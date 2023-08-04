@@ -50,6 +50,7 @@ void	ft_print_comb(void)
 			c = ++b + 1;
 		}
 		b = ++a;
+		c = b + 1;
 	}
 }
 
