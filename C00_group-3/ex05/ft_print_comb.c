@@ -49,8 +49,7 @@ void	ft_print_comb(void)
 			}
 			c = ++b + 1;
 		}
-		b = ++a + 1;
-		c = b + 1;
+		b = ++a;
 	}
 }
 
