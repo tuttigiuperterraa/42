@@ -30,6 +30,8 @@ char	*ft_strstr(char *str, char *to_find)
 				if (to_find[i] != str[++j])
 					tmp = 0;
 			}
+			i = 0;
+			j++;
 		}
 		else
 			j++;
