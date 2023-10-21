@@ -9,21 +9,19 @@
 /*   Updated: 2023/10/16 15:48:18 by gcosenza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include <string.h>
-#include <stdio.h>
+#incluse "libft.h"
 
 char *ft_strchr(const char *s, int c)
-{
-	if (c == 0)
-		return ("");
-		
+{		
 	while (*s != '\0')
 	{
 		if (*s == (int)c)
 			return ((char *)s);
 		s++;
 	}
-	return 0;
+	if ((char)c == '\0')
+		return ((char *)s);
+	return (NULL);
 }
 
 /*int	main()
