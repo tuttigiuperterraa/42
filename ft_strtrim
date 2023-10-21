@@ -1,5 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
+#include "libft.h"
 
 size_t	ft_strlen(const char *c)
 {
@@ -69,7 +68,7 @@ char *ft_strtrim(char const *s1, char const *set)
 }
 
 
-int	main(void)
+/*int	main(void)
 {
 	char *str1 = "6CCICAoCICA";
 	char *set = "CI";
@@ -77,4 +76,4 @@ int	main(void)
     printf("nuova stringa: %zu\n", start(str1, set));
     printf("nuova stringa: %zu\n", stop(str1, set));
 	printf("nuova stringa: %s\n", ft_strtrim(str1, set));
-}
+}*/
