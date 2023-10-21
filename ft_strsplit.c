@@ -10,8 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdio.h>
-#include <stdlib.h>
+#include "libft.h"
 
 size_t n_words(char const *s, char c)
 {
@@ -42,7 +41,8 @@ char **ft_strsplit(char const *s, char c)
         i = 0;
         j = 0;
         n = 0;
-
+        if (!s)
+                return (NULL);
         array = (char **)malloc(n_words(s, c) + 1);
         if (!array)
                 return (NULL);
@@ -75,7 +75,7 @@ char **ft_strsplit(char const *s, char c)
         return(array);
 }
 
-int main() 
+/*int main() 
 {
     char const *s = "JFDSJDJJJKJJJ";
     char c = 'J';
@@ -88,4 +88,4 @@ int main()
         printf("%s\n", ft_strsplit(s, c)[3]);
     //    i++;
     //}
-}
+}*/
