@@ -10,25 +10,11 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-char	*ft_tolower(char *str)
-{
-	int	i;
+#include "libft.h"
 
-	i = 0;
-	while (str[i] != '\0')
-	{
-		if (str[i] >= 65 && str[i] <= 90)
-		{
-			str[i] = str[i] + 32;
-		}
-		i++;
-	}
-	return (str);
+int	ft_tolower(int c)
+{
+	if (c >= 'A' && c <= 'Z')
+		c += 32;
+	return (c);
 }
-
-/*int	main(void)
-{
-	char	p[] = "chitARra";
-
-	write (1, ft_strlowcase (p), 9);
-}*/
