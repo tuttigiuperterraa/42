@@ -9,8 +9,8 @@
 /*   Updated: 2023/10/16 19:23:16 by gcosenza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include <string.h>
-#include <stdio.h>
+#include "libft.h"
+
 char	*ft_strnstr(const char *big, const char *little, size_t len)
 {
 	const char	*p_big;
