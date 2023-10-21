@@ -10,25 +10,11 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-char	*ft_toupper(char *str)
-{
-	int	i;
+#include "libft.h"
 
-	i = 0;
-	while (str[i] != '\0')
-	{
-		if (str[i] >= 97 && str[i] <= 122)
-		{
-			str[i] = str[i] - 32;
-		}
-		i++;
-	}
-	return (str);
+int	ft_toupper(int c)
+{
+	if (c >= 'a' && c <= 'z')
+		c -= 32;
+	return (c);
 }
-
-/*int	main(void)
-{
-	char	p[] = "chitarra";
-
-	write (1, ft_strupcase (p), 9);
-}*/
