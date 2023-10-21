@@ -16,10 +16,13 @@ int magnitude(long n)
 	
 	i = 0;
 	if (n < 0)
-		i++;
+    {
+        i++;
+		n= n *-1;
+    }
 	while (n > 10)
 	{
-		n/=10;
+		n= n/10;
 		i++;
 	}
 	return (i);
@@ -43,7 +46,8 @@ char *ft_itoa(int n)
 	}
 	while (i >= 0 && str[i] != '-')
 	{
-		str[i] = (n/10) + '0';
+		str[i] = (n%10) + '0';
+		n = n/10;
 		i--;
 	}
 	return (str);
