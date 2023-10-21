@@ -9,8 +9,7 @@
 /*   Updated: 2023/10/16 21:38:51 by gcosenza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
-//#include <stdio.h>
+#include "libft.h"
 int	ft_atoi(const char *nptr)
 {
 	int	i;
