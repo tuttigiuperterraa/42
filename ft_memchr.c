@@ -9,8 +9,7 @@
 /*   Updated: 2023/10/16 19:12:08 by gcosenza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include <string.h>
-#include <stdio.h>
+#include "libft.h"
 
 void *ft_memchr(const void *s, int c, size_t n)
 {
@@ -23,17 +22,5 @@ void *ft_memchr(const void *s, int c, size_t n)
 			return (--conv);
 		n--;
 	}
-	return 0;
+	return (0);
 }
-
-int	main()
-{
-	char *str = "ciao";
-	
-	printf("mia %s \n",(char *)ft_memchr(str, 0, 1));
-	printf("sua %s \n", (char *)memchr(str, 0, 1));
-	
-	return 0;
-	}
-
-
