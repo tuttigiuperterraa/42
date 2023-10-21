@@ -9,22 +9,22 @@
 /*   Updated: 2023/10/16 21:08:06 by gcosenza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include <string.h>
+#include "libft.h"
 
-void	*ft_memcmp(void *dst, const void *src, size_t n)
+int ft_memcmp(const void *s1, const void *s2, size_t n)
 {
 	size_t	p;
 	unsigned char *x;
 	unsigned char *y;
-	
-	x = (unsigned char *)dst;
-	y = (unsigned char *)src;
-	p = 0;
-	while (p < n)
-	{
-		x[p] = y[p];
-	       p++;
-	}
-	return (x)
-}	
 
+	if (n == 0)
+		return (0);
+	x = (unsigned char *)s1;
+	y = (unsigned char *)s2;
+	p = 0;
+	while (p < n && x[p] == y[p])
+	       p++;
+	if (p == n)
+		return (0);
+	return (x[p] - y[p]);
+}	
