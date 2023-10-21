@@ -9,7 +9,7 @@
 /*   Updated: 2023/10/19 19:18:37 by gcosenza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
+#include "libft.h"
 int magnitude(long n)
 {
 	int i;
@@ -22,6 +22,7 @@ int magnitude(long n)
 		n/=10;
 		i++;
 	}
+	return (i);
 }
 
 char *ft_itoa(int n)
@@ -33,6 +34,8 @@ char *ft_itoa(int n)
 	l = (long)n;
 	i = magnitude(n);
 	str = (char *)malloc(i + 1);
+	if (!str)
+		return (NULL);
 	if (n < 0)
 	{
 		n=n*-1;
@@ -43,4 +46,5 @@ char *ft_itoa(int n)
 		str[i] = (n/10) + '0';
 		i--;
 	}
+	return (str);
 }
