@@ -10,21 +10,14 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "libft.h"
+
 size_t	ft_strlen(char *str)
 {
 	int	len;
 
 	len = 0;
-	while (*str != '\0')
-	{
+	while (str[len] != '\0')
 		len++;
-		str++;
-	}
 	return (len);
 }
-/*int	main(void)
-{
-	int i = ft_strlen("banana");
-	i = i + 48;
-	write(1, &i, 1);
-}*/
