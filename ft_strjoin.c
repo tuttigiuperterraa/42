@@ -10,10 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 #include "libft.h"
-#include <stdlib.h>
-//#include <unistd.h>
-//#include <stdio.h>
-
 
 char	*allocate(int size, char **strs, char *sep)
 {
