@@ -10,19 +10,11 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-//#include <stdio.h>
+#include "libft.h"
+
 int	ft_isdigit(int a)
 {
 	if(a >= 0 && a <= 127)
-		return (a);
-	else
-		return (0);
+		return (1);
+	return (0);
 }
-
-/*int	main(void)
-{
-	int	p;
-
-	p = ft_isdigit ('9');
-	printf("%d", p);
-}*/
