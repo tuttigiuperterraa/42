@@ -4,7 +4,7 @@ void ft_lstadd_back(t_list **lst, t_list *new)
 {
   t_list  *tmp;
   
-  if (**lst == NULL) //è giusto mettere il doppio asterisco riferendomi al contenuto puntato dal puntatore?
+  if (**lst->content == NULL) //è giusto mettere il doppio asterisco riferendomi al contenuto puntato dal puntatore?
     *lst = new;
   tmp = *lst;
   while (*tmp->next != NULL)
