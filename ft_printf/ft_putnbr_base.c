@@ -44,7 +44,7 @@ int	check_invalid(int len)
 
 int	ft_putnbr_base(int nbr, char *base)
 {
-	long			len;
+	unsigned int			len;
 	unsigned int	nbrl;
 	static int		st;
 
