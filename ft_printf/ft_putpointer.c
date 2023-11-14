@@ -21,6 +21,7 @@ int	ft_putpointer(unsigned int nbr, char *base, int count)
 	long		nbrl;
 	static int	st;
 
+	st = 0;
 	nbrl = (long)nbr;
 	len = 0;
 	if (count == 0)
