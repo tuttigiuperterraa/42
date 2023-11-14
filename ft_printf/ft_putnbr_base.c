@@ -55,8 +55,6 @@ int	ft_putnbr_base(int nbr, char *base)
 		len++;
 	if (check_invalid(len) || check_duplicates(base, len))
 		return (0);
-	if (nbr < 0)
-		write(1, "-", 1);
 	if (nbrl >= len)
 		ft_putnbr_base((nbrl / len), base);
 	write (1, &base[nbrl % len], 1);
