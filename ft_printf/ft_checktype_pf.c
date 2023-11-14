@@ -19,7 +19,7 @@ int	checktype(char c, va_list arg_ptr, int size)
 	if (c == 's')
 		size = ft_putstr(va_arg(arg_ptr, char *));
 	if (c == 'p')
-		size = ft_putpointer(va_arg(arg_ptr, unsigned int),
+		size = ft_putpointer(va_arg(arg_ptr, void *),
 				"0123456789abcdef", 0);
 	if (c == 'd')
 		size = ft_putnbr(va_arg(arg_ptr, int));
