@@ -21,6 +21,11 @@ int ft_putpointer(void *ptr, char *base, int count)
     static int st;
 
     st = 0;
+	if (ptr == NULL)
+    {
+        write (1, "(nil)", 5);
+        return (5);
+    }
     if (count == 0)
         write(1, "0x", 2);
     count++;
