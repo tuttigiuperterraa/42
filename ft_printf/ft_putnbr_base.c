@@ -58,6 +58,7 @@ int	ft_putnbr_base(int nbr, char *base)
 	long		nbrl;     //quindi questo no long ma unsigned int       
 	static int	st;
 
+	st = 0;
 	nbrl = long_convert(nbr); //è qui non uso la funzione ma lo casto a unsigned int
 	len = 0;
 	while (base[len] != '\0')
