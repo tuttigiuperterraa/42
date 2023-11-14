@@ -42,8 +42,8 @@ int	check_invalid(int len)
 	return (0);
 }
 
-long	long_convert(int nbr)
-{
+long	long_convert(int nbr)  //forse posso togliere questa funzione e invece di convertire il neg in positivo lo casto a unsigned
+{                              //questo perchè in questo modo si comporta come printf
 	long	nbrl;
 
 	nbrl = nbr;
@@ -55,10 +55,10 @@ long	long_convert(int nbr)
 int	ft_putnbr_base(int nbr, char *base)
 {
 	int			len;
-	long		nbrl;
+	long		nbrl;     //quindi questo no long ma unsigned int       
 	static int	st;
 
-	nbrl = long_convert(nbr);
+	nbrl = long_convert(nbr); //è qui non uso la funzione ma lo casto a unsigned int
 	len = 0;
 	while (base[len] != '\0')
 		len++;
