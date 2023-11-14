@@ -29,6 +29,11 @@ int	ft_putunsigned(int nb)
 	int				size;
 	unsigned int	unb;
 
+	if (unb == 0)
+	{
+	    write (1, "0", 1);
+	    return (1);
+	}
 	ft_putunsigned2(nb);
 	size = 0;
 	unb = (unsigned int)nb;
