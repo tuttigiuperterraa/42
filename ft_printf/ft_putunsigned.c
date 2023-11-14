@@ -29,6 +29,7 @@ int	ft_putunsigned(int nb)
 	int				size;
 	unsigned int	unb;
 
+	unb = (unsigned int)nb;
 	if (unb == 0)
 	{
 	    write (1, "0", 1);
@@ -36,7 +37,6 @@ int	ft_putunsigned(int nb)
 	}
 	ft_putunsigned2(nb);
 	size = 0;
-	unb = (unsigned int)nb;
 	while (unb > 0)
 	{
 		unb /= 10;
