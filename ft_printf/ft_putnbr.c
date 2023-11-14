@@ -12,12 +12,10 @@
 
 #include "ft_printf.h"
 
-void	ft_putnbr2(int nb)
+void	ft_putnbr2(long nbl)
 {
-	long	nbl;
 	char	numero;
 
-	nbl = nb;
 	if (nbl < 0)
 	{
 		write(1, "-", 1);
@@ -32,17 +30,19 @@ void	ft_putnbr2(int nb)
 int	ft_putnbr(int nb)
 {
 	int	size;
-
-	ft_putnbr2(nb);
+	long	nbl;
+	
+	nbl = (long)nb;
+	ft_putnbr2(nbl);
 	size = 0;
-	if (nb <= 0)
+	if (nbl <= 0)
 	{
-		nb *= -1;
+		nbl *= -1;
 		size++;
 	}
-	while (nb > 0)
+	while (nbl > 0)
 	{
-		nb /= 10;
+		nbl /= 10;
 		size++;
 	}
 	return (size);
