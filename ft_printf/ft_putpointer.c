@@ -15,27 +15,25 @@
 int	check_invalid(int len);
 int	check_duplicates(char *base, int len);
 
-int	ft_putpointer(unsigned int nbr, char *base, int count)
+int ft_putpointer(void *ptr, char *base, int count)
 {
-	int			len;
-	long		nbrl;
-	static int	st;
+    int len;
+    static int st;
 
-	st = 0;
-	nbrl = (long)nbr;
-	len = 0;
-	if (count == 0)
-		write(1, "0x", 2);
-	count++;
-	while (base[len] != '\0')
-		len++;
-	if (check_invalid(len) || check_duplicates(base, len))
-		return (0);
-	if (nbrl >= len)
-		ft_putnbr_base((nbrl / len), base);
-	write (1, &base[nbrl % len], 1);
-	st++;
-	return (st + 2);
+    st = 0;
+    if (count == 0)
+        write(1, "0x", 2);
+    count++;
+    len = 0;
+    while (base[len] != '\0')
+        len++;
+    if (check_invalid(len) || check_duplicates(base, len))
+        return (0);
+    if ((unsigned long)ptr >= len)
+        ft_putpointer((void *)((unsigned long)ptr / len), base, count);
+    write(1, &base[(unsigned long)ptr % len], 1);
+    st++;
+    return (st + 2);
 }
 
 /*int	main(void)
