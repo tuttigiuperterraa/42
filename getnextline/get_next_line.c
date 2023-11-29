@@ -42,7 +42,7 @@ char	*concatenate(t_list *list)
 	int		str_len;
 	char	*str;
 
-	if (!list)
+	if (list == NULL)
 		return (NULL);
 	str_len = len_string(list);
 	str = malloc(str_len + 1);
@@ -52,7 +52,7 @@ char	*concatenate(t_list *list)
 	return (str);
 }
 
-void	ft_lstadd_back(t_list **list, char *buf)
+void	ft_lstadd_back(t_list **list, char *buffer)
 {
 	t_list	*last_node;
 	t_list	*new_node;
@@ -61,11 +61,11 @@ void	ft_lstadd_back(t_list **list, char *buf)
 	if (!new_node)
 		return ;
 	last_node = find_last_node(*list);
-	if (!last_node)
+	if (last_node == NULL)
 		*list = new_node;
 	else
 		last_node->next = new_node;
-	new_node->content = buf;
+	new_node->content = buffer;
 	new_node->next = NULL;
 }
 
@@ -77,10 +77,10 @@ void	fill_list(t_list **list, int fd)
 	while (!end_line(*list))
 	{
 		buffer = malloc(BUFFER_SIZE + 1);
-		if (!buffer)
+		if (buffer == NULL)
 			return ;
 		tot = read(fd, buffer, BUFFER_SIZE);
-		if (tot == 0)
+		if (!tot)
 		{
 			free(buffer);
 			return ;
