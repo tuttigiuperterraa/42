@@ -16,7 +16,7 @@ int	end_line(t_list *list)
 {
 	int	i;
 
-	if (!list)
+	if (list == NULL)
 		return (0);
 	while (list)
 	{
@@ -34,7 +34,7 @@ int	end_line(t_list *list)
 
 t_list	*find_last_node(t_list *list)
 {
-	if (!list)
+	if (list == NULL)
 		return (NULL);
 	while (list->next)
 		list = list->next;
@@ -46,7 +46,7 @@ void	fill_str(t_list *list, char *str)
 	int	i;
 	int	j;
 
-	if (!list)
+	if (list == NULL)
 		return ;
 	j = 0;
 	while (list)
@@ -72,7 +72,7 @@ int	len_string(t_list *list)
 	int	i;
 	int	len;
 
-	if (!list)
+	if (list == NULL)
 		return (0);
 	len = 0;
 	while (list)
@@ -97,7 +97,7 @@ void	clear_all(t_list **list, t_list *new_node, char *buffer)
 {
 	t_list	*tmp;
 
-	if (*list == NULL || list == NULL)
+	if (*list == NULL)
 		return ;
 	while (*list)
 	{
