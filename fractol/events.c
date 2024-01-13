@@ -62,7 +62,7 @@ int	julia_track(int x, int y, t_fractal *fractal)
 		fractal_render(fractal);
 	}
 	//salvo le coordinate mouse in una variabile e al momento dello zoom le uso per ricentrare l'immagine
-	// fractal-> mouse_real =(scaling(x, -2, +2, 0, WIDTH) * fractal->zoom) + fractal->shift_x; //TODO
-	// fractal-> mouse_imag = (scaling(y, +2, -2, 0, HEIGHT) * fractal->zoom) + fractal->shift_y; //TODO
+	// fractal-> mouse_real = (scaling(x, -2, +2, 0, WIDTH) * fractal->zoom) + fractal->shift_x;  //TODO
+	// fractal-> mouse_imag = (scaling(y, +2, -2, 0, HEIGHT)* fractal->zoom) + fractal->shift_y;  //TODO
 	return 0;
 }
