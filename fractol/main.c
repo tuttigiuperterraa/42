@@ -15,7 +15,7 @@ int	main(int argc, char **argv)
 			fractal.julia_x = atodbl(av[2]);
 			fractal.julia_y = atodbl(av[3]);
 		}
-		f_init(&frac);
+		fractal_init(&frac);
 		fractal_render(&frac);
 		mlx_loop(frac -> x_connection -> mlx_connection);
 	}
