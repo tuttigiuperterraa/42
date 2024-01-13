@@ -49,6 +49,8 @@ typedef struct	s_fractal
 	double	zoom;
 	double	julia_x;
 	double	julia_y;
+	//double	mouse_real;
+	//double	mouse_imag;
 }				t_fractal;
 
 
