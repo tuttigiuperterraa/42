@@ -37,8 +37,6 @@ int	key_handler(int keysym, t_fractal *fractal)
 
 int	mouse_handler(int button, int x, int y, t_fractal *fractal)
 {
-	//double mouse_real = scaling(fractal->mouse_x, -2, 2, 0, WIDTH);
-    	//double mouse_imag = scaling(fractal->mouse_y, 2, -2, 0, HEIGHT);
 	if (button == Button5)
 	{
 		fractal->zoom *= 0.95 
@@ -64,7 +62,7 @@ int	julia_track(int x, int y, t_fractal *fractal)
 		fractal_render(fractal);
 	}
 	//salvo le coordinate mouse in una variabile e al momento dello zoom le uso per ricentrare l'immagine
-	// fractal-> mouse_x =(scaling(x, -2, +2, 0, WIDTH) * fractal->zoom) + fractal->shift_x; //TODO
-	// fractal-> mouse_y = (scaling(y, +2, -2, 0, HEIGHT) * fractal->zoom) + fractal->shift_y; //TODO
+	// fractal-> mouse_real =(scaling(x, -2, +2, 0, WIDTH) * fractal->zoom) + fractal->shift_x; //TODO
+	// fractal-> mouse_imag = (scaling(y, +2, -2, 0, HEIGHT) * fractal->zoom) + fractal->shift_y; //TODO
 	return 0;
 }
