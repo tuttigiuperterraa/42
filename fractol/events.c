@@ -45,12 +45,12 @@ int	mouse_handler(int button, int x, int y, t_fractal *fractal)
 		{
 			if (fractal->mouse_imag > 0)
 			{
-				fractal->shift_x = (1 - fractal->zoom) * fractal->mouse_real;
-				fractal->shift_y = (1 - fractal->zoom) * fractal->mouse_imag;
+				fractal->shift_x = (1 - fractal->zoom) * fractal->mouse_real * -1;
+				fractal->shift_y = (1 - fractal->zoom) * fractal->mouse_imag * -1;
 			}
 			else
 			{
-				fractal->shift_x = (1 - fractal->zoom) * fractal->mouse_real;
+				fractal->shift_x = (1 - fractal->zoom) * fractal->mouse_real * -1;
 				fractal->shift_y = (1 - fractal->zoom) * fractal->mouse_imag;
 			}
 		}
@@ -59,7 +59,7 @@ int	mouse_handler(int button, int x, int y, t_fractal *fractal)
 			if (fractal->mouse_imag > 0)
 			{
 				fractal->shift_x = (1 - fractal->zoom) * fractal->mouse_real;
-				fractal->shift_y = (1 - fractal->zoom) * fractal->mouse_imag;
+				fractal->shift_y = (1 - fractal->zoom) * fractal->mouse_imag * -1;
 			}
 			else
 			{
@@ -82,20 +82,20 @@ int	mouse_handler(int button, int x, int y, t_fractal *fractal)
 			else
 			{
 				fractal->shift_x = (fractal->zoom - 1) * fractal->mouse_real;
-				fractal->shift_y = (fractal->zoom - 1) * fractal->mouse_imag;
+				fractal->shift_y = (fractal->zoom - 1) * fractal->mouse_imag * -1;
 			}
 		}
 		else
 		{
 			if (fractal->mouse_imag > 0)
 			{
-				fractal->shift_x = (fractal->zoom - 1) * fractal->mouse_real;
+				fractal->shift_x = (fractal->zoom - 1) * fractal->mouse_real * -1;
 				fractal->shift_y = (fractal->zoom - 1) * fractal->mouse_imag;
 			}
 			else
 			{
-				fractal->shift_x = (fractal->zoom - 1) * fractal->mouse_real;
-				fractal->shift_y = (fractal->zoom - 1) * fractal->mouse_imag;
+				fractal->shift_x = (fractal->zoom - 1) * fractal->mouse_real * -1;
+				fractal->shift_y = (fractal->zoom - 1) * fractal->mouse_imag * -1;
 			}
 		}
 	}
