@@ -37,17 +37,67 @@ int	key_handler(int keysym, t_fractal *fractal)
 
 int	mouse_handler(int button, int x, int y, t_fractal *fractal)
 {
-	if (button == Button5)
+	//Zoom in
+	if (button == Button4)
 	{
-		fractal->zoom *= 0.95 
-		//fractal->shift_x += (mouse_real - WIDTH / 2) * fractal->zoom;
-		//fractal->shift_y += (mouse_imag - HEIGHT / 2) * fractal->zoom;
+		fractal->zoom *= 0.95;
+		if (fractal->mouse_real > 0)
+		{
+			if (fractal->mouse_imag > 0)
+			{
+				fractal->shift_x = (1 - fractal->zoom) * fractal->mouse_real;
+				fractal->shift_y = (1 - fractal->zoom) * fractal->mouse_imag;
+			}
+			else
+			{
+				fractal->shift_x = (1 - fractal->zoom) * fractal->mouse_real;
+				fractal->shift_y = (1 - fractal->zoom) * fractal->mouse_imag;
+			}
+		}
+		else
+		{
+			if (fractal->mouse_imag > 0)
+			{
+				fractal->shift_x = (1 - fractal->zoom) * fractal->mouse_real;
+				fractal->shift_y = (1 - fractal->zoom) * fractal->mouse_imag;
+			}
+			else
+			{
+				fractal->shift_x = (1 - fractal->zoom) * fractal->mouse_real;
+				fractal->shift_y = (1 - fractal->zoom) * fractal->mouse_imag;
+			}
+		}
 	}
-	else if (button == Button4)
+	//Zoom out
+	else if (button == Button5)
 	{
-		fractal->zoom *= 1.05 
-		//fractal->shift_x -= (mouse_real - WIDTH / 2) * fractal->zoom;
-		//fractal->shift_y -= (mouse_imag - HEIGHT / 2) * fractal->zoom;
+		fractal->zoom *= 1.05;
+		if (fractal->mouse_real > 0)
+		{
+			if (fractal->mouse_imag > 0)
+			{
+				fractal->shift_x = (fractal->zoom - 1) * fractal->mouse_real;
+				fractal->shift_y = (fractal->zoom - 1) * fractal->mouse_imag;
+			}
+			else
+			{
+				fractal->shift_x = (fractal->zoom - 1) * fractal->mouse_real;
+				fractal->shift_y = (fractal->zoom - 1) * fractal->mouse_imag;
+			}
+		}
+		else
+		{
+			if (fractal->mouse_imag > 0)
+			{
+				fractal->shift_x = (fractal->zoom - 1) * fractal->mouse_real;
+				fractal->shift_y = (fractal->zoom - 1) * fractal->mouse_imag;
+			}
+			else
+			{
+				fractal->shift_x = (fractal->zoom - 1) * fractal->mouse_real;
+				fractal->shift_y = (fractal->zoom - 1) * fractal->mouse_imag;
+			}
+		}
 	}
 	fractal_render(fractal);
 	return (0);
