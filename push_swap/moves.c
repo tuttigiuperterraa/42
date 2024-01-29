@@ -26,7 +26,6 @@ int mid(t_list **stack, int dim)
     i = 0;
     tmp = *stack;
     array = (int *)calloc(dim + 1, sizeof(int));
-
     while (tmp && i < dim)
     {
         array[i] = tmp->content;
@@ -50,6 +49,13 @@ int mid(t_list **stack, int dim)
         }
         i++;
     }
+    if (dim % 2 == 0)
+        mid = array[dim / 2];
+    else
+        mid = array[(dim - 1) / 2];
+    free(array);
+    return (mid);
+}
 
     if (dim % 2 == 0)
         return array[dim / 2];
