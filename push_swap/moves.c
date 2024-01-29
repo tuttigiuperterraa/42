@@ -12,7 +12,52 @@
 #include "libft.h";
 #include "pushswap.h";
 
-int	mid(t_list *a)
+int mid(t_list **stack, int dim)
+{
+    int i;
+    int j;
+    t_list *tmp;
+    int *array;
+    int *sort;
+
+    if (!stack || !(*stack))
+        return (NULL);
+
+    i = 0;
+    tmp = *stack;
+    array = (int *)calloc(dim + 1, sizeof(int));
+
+    while (tmp && i < dim)
+    {
+        array[i] = tmp->content;
+        tmp = tmp->next;
+        i++;
+    }
+    i = 0;
+    while (i < dim - 1)
+    {
+        sort = &array[i];
+        j = i + 1;
+        while (j < dim)
+        {
+            if (array[j] < *sort)
+            {
+                int temp = array[j];
+                array[j] = *sort;
+                *sort = temp;
+            }
+            j++;
+        }
+        i++;
+    }
+
+    if (dim % 2 == 0)
+        return array[dim / 2];
+    else
+        return array[(dim - 1) / 2];
+}
+
+int	max(t_list *a)
 {
 	int	max;
 	
