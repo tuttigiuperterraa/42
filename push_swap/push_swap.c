@@ -1,136 +1,241 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <string.h>
 
 typedef struct s_list
 {
-    void *content;
-    struct s_list *next;
-} t_list;
+	long			content;
+    int             push;
+	struct s_list	*next;
+}					t_list;
 
-t_list *ft_lstnew(void *content, size_t content_size)
+double	media(t_list *a)
 {
-    t_list *new_node = (t_list *)malloc(sizeof(t_list));
-    if (new_node == NULL)
-        return (NULL);
-    new_node->content = malloc(content_size);
-    if (new_node->content == NULL)
-    {
-        free(new_node);
-        return (NULL);
-    }
-    memcpy(new_node->content, content, content_size);
-    new_node->next = NULL;
-    return (new_node);
+	int i;
+	t_list *temp;
+	double val;
+
+	i = 0;
+	temp = a;
+	val = 0;
+	while (temp != NULL)
+	{
+		i++;
+		val +=temp->content;
+		temp = temp->next;
+	}
+	return (val/i);
 }
 
-void ft_lstadd_back(t_list **lst, t_list *new_n)
+int max(t_list **stack)
 {
-    t_list *tmp;
+	int	max;
+	t_list *temp;
 
-    if (*lst == NULL)
-    {
-        *lst = new_n;
-        return;
-    }
-    tmp = *lst;
-    while (tmp->next != NULL)
-        tmp = tmp->next;
-    tmp->next = new_n;
+	temp = *stack;
+	max = INT_MIN;
+	while (temp)
+	{
+		if (max < temp->content)
+			max = temp->content;
+		temp = temp->next;	
+	}
+	return (max);
 }
 
-void ft_lstclear(t_list **lst, void (*del)(void *))
+int type_rot_b(t_list **stack)
 {
-    if (*lst == NULL || del == NULL)
-        return;
-    while (*lst)
-    {
-        t_list *tmp = *lst;
-        *lst = (*lst)->next;
-        del(tmp->content);
-        free(tmp);
-    }
+	t_list *temp;
+	int rot;
+	int rev;
+	
+	if (!stack || !(*stack) || !(*stack)->next)
+		return (0);
+	temp = (t_list *)malloc(sizeof(t_list));
+	if (!temp)
+		return (0);
+	temp = *stack;
+	rot = 0;
+	rev = 0;
+	while (temp)
+	{
+		if (temp->content == max(stack))
+			break ;
+		rot++;
+		temp = temp->next;
+	}
+	rev = counter(*stack) - rot;
+	if (rot <= rev)
+		return (rot);
+	else
+		return (rev * -1);	
 }
 
-int ft_atoi(const char *nptr)
+float media_array(long array[], int lunghezza)
 {
+	float media;
     int i;
-    int num;
-    int neg;
+	int somma;
 
-    i = 0;
-    neg = 1;
-    num = 0;
-    while (nptr[i] == ' ' || (nptr[i] >= 9 && nptr[i] <= 13))
-        i++;
-    if (nptr[i] == '-')
-    {
-        neg = neg * -1;
-        i++;
-    }
-    else if (nptr[i] == '+')
-        i++;
-    while (nptr[i] >= 48 && nptr[i] <= 57)
-    {
-        num = 10 * num + nptr[i] - 48;
-        i++;
-    }
-    return (num * neg);
+    if (lunghezza == 0)
+        return 0;
+    somma = 0;
+    while (i < lunghezza)
+        somma += array[i++];
+	media = (float)somma / lunghezza;    
+	return (media);
 }
 
-int mid(t_list **stack, int dim)
+int is_sorted(long int *arr, int n)
 {
-    int i = 0;
-    t_list *tmp = *stack;
-    int *array = (int *)malloc(sizeof(int) * dim);
-    
-    while (i < dim && tmp != NULL)
-    {
-        array[i] = *(int *)tmp->content;
-        tmp = tmp->next;
-        i++;
-    }
-
-    // Sort the array
-    for (int j = 0; j < dim - 1; j++)
-    {
-        for (int k = j + 1; k < dim; k++)
-        {
-            if (array[j] > array[k])
-            {
-                int temp = array[j];
-                array[j] = array[k];
-                array[k] = temp;
-            }
-        }
-    }
-
-    int m;
-    if (dim % 2 == 0)
-        m = array[dim / 2];
-    else
-        m = array[(dim - 1) / 2];
-
-    free(array);
-
-    return m;
+	int i;
+	
+	i = 1;
+	while (i < n)
+	{
+		if (arr[i] < arr[i - 1])
+			return (0);
+		i++;
+	}
+	return (1);
 }
 
-
-int count_elements(t_list *a)
+void little_check(t_list **a, t_list **b)
 {
-    int i;
+	int i;
+	int rot_a;
+	int rot_b;
+	
+	i = 0;
+	if (!a || !(*a) || !b || !(*b))
+		return ;
+	if (!(*a)->next || !(*b)->next)
+		return ;
+	rot_a = type_rot_a(a);
+	while (counter(*b) > 1)
+	{
+		rot_b = type_rot_b(b);
+		if (rot_b <= 0)
+		{
+			while ((*b)->content != max(b))
+			{
+				reverse_rotate(b);
+				write(1, "rrb\n", 4);
+			}
+			pa(a, b);
+		}
+		else if (rot_b > 0)
+		{
+			while ((*b)->content != max(b))
+			{
+				rotate(b);
+				write(1, "rb\n", 3);
+			}
+			pa(a, b);
+		}
+	}
+}
 
-    i = 0;
-    if (!a)
-        return(0);
-    while (a->next)
+void	ft_lstclear(t_list **lst, void (*del)(void*))
+{
+	if (*lst == NULL || del == NULL || lst == NULL)
+		return ;
+	if ((*lst)->next != NULL)
+		ft_lstclear(&(*lst)->next, del);
+	del((*lst)->content);
+	free(*lst);
+	*lst = NULL;
+}
+int	counter(t_list *a)
+{
+	int n;
+	t_list *temp;
+
+	n = 0;
+	temp = a;
+	while (temp != NULL)
+	{
+		temp = temp->next;
+		n++;
+	}
+	return (n);
+}
+void	sort(t_list **a, t_list **b, int n)
+{
+	int	med;
+	int i;
+
+	if ((*a)->push != 0)
+		pre_order(a, b);
+	while (counter(*a) > 2)
+	{
+		med = media(*a);		
+		if ((*a)->content < med)
+			pb(b, a);
+		else if (*b && (*b)->next && (*b)->content < (*b)->next->content)
+			do_rotate(a, b, 3);
+		else
+			do_rotate(a, b, 1);
+	}
+	if ((*a)->content > (*a)->next->content)
+	{
+		sa(a);
+		write(1, "sa\n", 3);
+	}
+	little_check(a, b);
+    check_ss(a, b);
+    pa(a, b);
+    pa(a, b);
+}
+
+int check_push(t_list **a, int i)
+{
+	t_list *temp;
+
+	temp = *a;
+	while (temp)
+	{
+		if (temp->push == i)
+			return (1);
+		temp = temp->next;
+	}
+	return (0);
+}
+
+void do_rotate(t_list **a, t_list **b, int cod)
+{
+    if (cod == 1 && a && *a && (*a)->next)
     {
-        i++;
-        a = a->next;
+        rotate(a);
+        write(1, "ra\n", 3);
     }
-    return (i+1);
+    else if (cod == 2 && b && *b && (*b)->next)
+    {
+        rotate(b);
+        write(1, "rb\n", 3);
+    }
+    else if (cod == 3 && a && *a && (*a)->next && b && *b && (*b)->next)
+    {
+        rotate(a);
+        rotate(b);
+        write(1, "rr\n", 3);
+    }
+    else if (cod == 4 && a && *a && (*a)->next)
+    {
+        rev_rotate(a);
+        write(1, "rra\n", 4);
+    }
+    else if (cod == 5 && b && *b && (*b)->next)
+    {
+        rev_rotate(b);
+        write(1, "rrb\n", 4);
+    }
+    else if (cod == 6 && a && *a && (*a)->next && b && *b && (*b)->next)
+    {
+        rev_rotate(a);
+        rev_rotate(b);
+        write(1, "rrr\n", 4);
+    }
 }
 
 void rotate(t_list **stack)
@@ -138,18 +243,15 @@ void rotate(t_list **stack)
     t_list *node_2;
     t_list *tmp;
 
-    if (stack && *stack && (*stack)->next)
-    {
-        tmp = *stack;
-        node_2 = (*stack)->next;
-
-        while (tmp->next)
-            tmp = tmp->next;
-
-        tmp->next = *stack;
-        (*stack)->next = NULL;
-        *stack = node_2;
-    }
+    if (*stack == NULL || (*stack)->next == NULL)
+        return;
+    tmp = *stack;
+    node_2 = (*stack)->next;
+    while (tmp->next)
+        tmp = tmp->next;
+    tmp->next = *stack;
+    (*stack)->next = NULL;
+    *stack = node_2;
 }
 
 void rev_rotate(t_list **stack)
@@ -168,271 +270,259 @@ void rev_rotate(t_list **stack)
         end->next = *stack;
         *stack = end;
     }
+    else
+        return;
 }
 
-void push(t_list **stack_from, t_list **stack_to)
+void pa(t_list **add, t_list **take)
 {
-    t_list *tmp;
+	t_list *g;
 
-    if (stack_to && stack_from && *stack_from)
-    {
-        tmp = *stack_from;
-        *stack_from = (*stack_from)->next;
-        tmp->next = *stack_to;
-        *stack_to = tmp;
-    }
+	g = (t_list *)malloc(sizeof(t_list));
+	if (!g || !*take || !take)
+		return ;
+	g->content = (*take)->content;
+	g->next = *add;
+	*add = g;
+	*take = (*take)->next;
+	write(1, "pa\n", 3);
+	free(g);
 }
 
-void swap(t_list **stack)
+void pb(t_list **add, t_list **take)
 {
-    t_list *node_1;
-    t_list *node_2;
+	t_list *g;
+	t_list *current;
+	t_list *temp;
 
-    if (stack && *stack && (*stack)->next)
-    {
-        node_1 = *stack;
-        node_2 = node_1->next;
-        node_1->next = node_2->next;
-        node_2->next = node_1;
-        *stack = node_2;
-    }
+	g = (t_list *)malloc(sizeof(t_list));
+	if (!g || !*take || !take)
+		return ;
+	g->content = (*take)->content;
+	g->next = *add;
+	*add = g;
+	current = *add;
+	temp = *take;
+	*take = (*take)->next;
+	write(1, "pb\n", 3);
+	free(temp);
+	current = *take;
 }
 
-int little_order(t_list **a)
-{
-    while ((*a)->next)
-    {
-        if (*(int *)(*a)->content > *(int *)(*a)->next->content)
-        {
-            swap(a);
-            return (1);
-        }
-        (*a) = (*a)->next;
-        return (0);
-    }
-    return (0);
-}
 
-int get_last_value(t_list *a)
-{
-    if (a == NULL)
-        return 0;
-
-    t_list *tmp = a;
-    while (tmp->next != NULL)
-    {
-        tmp = tmp->next;
-    }
-    return (*(int *)tmp->content);
-}
-
-int penality_r(t_list *a, int t)
-{
-    int pi;
-    int i;
-    t_list *head;
-    
-    head = a;
-    i = 0;
-    pi = 0;
-    while (i++ < count_elements(a)/2)
-    {
-        if (*(int *)head->content > t)
-        {
-            pi++;
-            head = head->next;
-        }
-        return (pi);  
-    }
-}
-
-int penality_rr(t_list *a, int t)
-{
-    int pj;
-    int j;
-    t_list *mid;
-    
-    mid = a;
-    j = 0;
-    pj = 0;
-    while (j++ < count_elements(a)/2 -1)
-        mid = mid->next;
-    while (mid)
-    {
-        if (*(int *)mid->content > t)
-        {
-            pj++;
-            mid = mid->next;
-        }
-        return (count_elements(a)/2 -pj);
-    }
-}
-
-int penality_r_max(t_list *a, int t)
-{
-    int pi;
-    int i;
-    t_list *head;
-    
-    head = a;
-    i = 0;
-    pi = 0;
-    while (i++ < count_elements(a)/2)
-    {
-        if (*(int *)head->content != t)
-        {
-            pi++;
-            head = head->next;
-        }
-        return (pi);  
-    }
-}
-
-int penality_rr_max(t_list *a, int t)
-{
-    int pj;
-    int j;
-    t_list *mid;
-    
-    mid = a;
-    j = 0;
-    pj = 0;
-    while (j++ < count_elements(a)/2 -1)
-        mid = mid->next;
-    while (mid)
-    {
-        if (*(int *)mid->content != t)
-        {
-            pj++;
-            mid = mid->next;
-        }
-        return (count_elements(a)/2 -pj);
-    }
-}
-
-int find_direction(int pi, int pj)
-{
-    if (pj < pi)
-    {
-        printf ("si fa rr\n");
-        return (1);
-    }
-    return (0);
-}
-
-void sort_a(t_list **a, t_list **b)
+void sa(t_list **a)
 {
     int t;
-    int a_num;
-    int a_tot;
+
+    if (!a || !*a || !(*a)->next)
+        return;
+
+    t = (*a)->content;
+    (*a)->content = (*a)->next->content;
+    (*a)->next->content = t;
+}
+
+void sb(t_list **a)
+{
+    int t;
+
+    if (!a || !*a || !(*a)->next)
+        return;
+
+    t = (*a)->content;
+    (*a)->content = (*a)->next->content;
+    (*a)->next->content = t;
+}
+
+void ss(t_list **a, t_list **b)
+{
+    sa(a);
+    sb(b);
+    write(1, "ss\n", 3);
+}
+
+void check_ss(t_list **a, t_list **b)
+{
+    if (!a || !*a || !(*a)->next || !b || !*b || !(*b)->next)
+        return ;
+    if ((*a)->next != NULL && (*b)->next != NULL)
+    {
+        if ((*a)->content > (*a)->next->content && (*b)->content < (*b)->next->content)
+            ss(a, b);
+    }
+
+    if ((*a)->next != NULL && (*a)->content > (*a)->next->content)
+    {
+        write(1, "sa\n", 3);
+        sa(a);
+    }
+
+    if ((*b)->next != NULL && (*b)->content < (*b)->next->content)
+    {
+        write(1, "sb\n", 3);
+        sb(b);
+    }
+}
+
+void pre_order(t_list **a, t_list **b)
+{
     int i;
 
-
-    i = 0;
-    while (count_elements(*a) >= 3)
+    i = 1;
+    while (i < 6)
     {
-        t = mid(a, count_elements(*a));
-        a_num = count_elements(*a)/2; 
-        a_tot = count_elements(*a);
-        while (count_elements(*a) > a_tot - a_num) 
-        {
-            if (*(int *)(*a)->content < t)
-            {
-                push(a, b);
-                write(1, "pa \n", 4);
-                //(*a) = (*a)->next;
-            }
-            else
-            {   
-                //printf("penality r: %i, penality rr: %i\n",penality_r(*a, t), penality_rr(*a, t)); 
-                if (find_direction(penality_r(*a, t), penality_rr(*a, t)))
-                {
-                    rev_rotate(a);
-                    write(1, "rra \n", 5);
-                }
-                else
-                {
-                    rotate(a);
-                    write(1, "ra \n", 4);
-                }
-            }
-        }
-    }
-    if (little_order(a))
-        write(1, "sa \n", 4);
-}
-
-void sort_b(t_list **a, t_list **b) {
-    t_list *current;
-    t_list *max;
-    
-    if (*b == NULL) {
-        printf("La lista è vuota\n");
-        return;
-    }
-    
-    while (count_elements(*b) >= 3) 
-    {
-        current = *b;
-        max = *b;
-        
-        // Trova il nodo con il valore massimo nella lista
-        while (current != NULL) 
-        {
-            if (*(int *)current->content > *(int *)max->content) 
-                max = current;
-            current = current->next;
-        }
-        
-        // Se il nodo corrente è il massimo, sposta la testa al nodo successivo
-        if (*b == max) {
-            push(b, a);
-            write(1, "pb \n", 4);
-        }
+        if ((*a)->push == i)
+            pb(b, a);
         else
-        {
-            if (find_direction(penality_r_max(*b, *(int *)max->content), penality_rr_max(*b, *(int *)max->content))) 
-            {
-                rev_rotate(b);
-                write(1, "rrb \n", 5);
-            }
-            else
-            {
-                rotate(b);
-                write(1, "rb \n", 4);
-            }
-        }
+            do_rotate(a, b, 1);
+        if (!check_push(a, i))
+            i++;
     }
-    if (!little_order(b)) 
-        write(1, "sb \n", 4);
-    write(1, "pb \n", 4);
-    write(1, "pb \n", 4);
 }
 
+void add_push(t_list *new_node, int size, long int *arr)
+{
+	float media;
+	media = media_array(arr, size);
+
+	if (new_node->content < media / 4)
+			new_node->push = 1;
+		else if (new_node->content< media / 3)
+			new_node->push = 2;
+		else if (new_node->content < media / 2)
+			new_node->push = 3;
+		else if (new_node->content < media / 1.5)
+			new_node->push = 4;
+		else if (new_node->content < media)
+			new_node->push = 5;		
+		else
+			new_node->push = 6;
+}
+
+void array_to_stack(long int *arr, int size, t_list **stack)
+{
+	t_list *new_node;
+	int i = size - 1;
+	while (i >= 0)
+	{
+		new_node = malloc(sizeof(t_list));
+		new_node->content = arr[i];
+		if (size > 50)
+			add_push(new_node, size, arr);
+		else
+			new_node->push = 0;
+		new_node->next = *stack;
+		*stack = new_node;
+		i--;
+	}
+}
+
+int ft_check(long int *nums, int i)
+{
+	int j;
+
+	i--;
+    while (i >= 0)
+    {
+		j = 0;
+		if(nums[i] > 2147483647 || nums[i] < -2147483648)
+			return (0);
+		while (j < i)
+		{
+			if((int)nums[i] == (int)nums[j])
+				return (0);
+			j++;
+		}
+		i--;
+	}
+	return (1);
+}
+int is_sign(char av)
+{
+	if (av == '+')
+		return (1);
+	else if(av == '-')
+		return (-1);
+	else
+		return (0);
+}
+
+int ft_atoi(char **nptr, long int *nums)
+{
+    int i = 1;
+    long int num = 0;
+    int n = 0;
+    while (nptr[i])
+    {
+        int sign = 1;
+        int j = 0;
+        while (nptr[i][j])
+        {
+            if (is_sign(nptr[i][j]) == 1 || is_sign(nptr[i][j]) == -1)
+            {
+                sign = is_sign(nptr[i][j]);
+                j++;
+            }
+            while (nptr[i][j] >= '0' && nptr[i][j] <= '9')
+            {
+                num = num * 10 + (nptr[i][j] - '0');
+                if (nptr[i][j + 1] == ' ' || nptr[i][j + 1] == '\0')
+                {
+                    nums[n] = sign * num;
+                    num = 0;
+                    n++;
+                    if(nptr[i][j + 1] == '\0')
+                        break;
+                }
+                j++;
+            }
+            j++;
+        }
+        i++;
+    }
+    return n;
+}
+
+int count_element(char **argv)
+{
+	int n;
+    int i;
+    int j;
+
+	n = 0;
+	i = 1;
+    while (argv[i])
+	{
+        j = 0;
+        while (argv[i][j])
+        {
+            if (argv[i][j] >= '0' && argv[i][j] <= '9')
+            {
+                while (argv[i][j] >= '0' && argv[i][j] <= '9')
+                    j++;
+                n++;
+            }
+            else
+                j++;
+        }
+        i++;
+    }
+    return (n);
+}
 
 int main(int argc, char **argv)
 {
-    t_list *stackA;
-    t_list *stackB = NULL;
-    t_list *new_n;
-    t_list **chunk;
-    int i;
-    int value;
+    t_list	*stackA;
+    t_list  *stackB;
+    int n;
 
-    i = 1;
-    if (argc <= 2)
+    n = count_element(argv);
+    long int nums[n]; //TO DO
+    ft_atoi(argv, nums);
+    if (argc <= 2 || ft_check(nums, n) == 0)
         return (0);
-    value = ft_atoi(argv[i]);
-    stackA = ft_lstnew(&value, sizeof(int));
-    while (++i < argc)
-    {
-        value = ft_atoi(argv[i]);
-        new_n = ft_lstnew(&value, sizeof(int));
-        ft_lstadd_back(&stackA, new_n);
-    }
-    sort_a(&stackA, &stackB);
-    sort_b(&stackA, &stackB);
-    ft_lstclear(&stackA, free);
-    ft_lstclear(&stackB, free);
-    ft_lstclear(chunk, free);
+    array_to_stack(nums, n, &stackA); //TO DO
+    sort(&stackA, &stackB, n); //TO DO
+    //TO DO FREE
+    return (0);
 }
