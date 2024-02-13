@@ -523,7 +523,6 @@ int main(int argc, char **argv)
         return (0);
     array_to_stack(nums, n, &stackA); //TO DO
     sort(&stackA, &stackB, n); //TO DO
-    free(stackA);
-	free(stackB);
+	//TO DO FREE
     return (0);
 }
