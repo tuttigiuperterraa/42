@@ -380,7 +380,7 @@ void pre_order(t_list **a, t_list **b)
     }
 }
 
-void add_push(t_list *new_node, int size, long int *arr)
+void add_push(t_list *new_node, int size, long int *arr) //TO DO CON MID
 {
 	float media;
 	media = media_array(arr, size);
