@@ -1,5 +1,20 @@
 #include "push-swap.h"
 
+int is_sorted_list(t_list *list)
+{
+	t_list *tmp;
+	int i = 0;
+	
+	tmp = list;
+	while (tmp->next != NULL)
+	{
+		if (!(tmp->next->content > tmp->content))
+			i++;
+		tmp = tmp->next;	
+	}
+	return (i);
+}
+
 int find_direction(t_list *a, int med, int A)
 {
 	int pi;
