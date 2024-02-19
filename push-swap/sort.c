@@ -69,18 +69,22 @@ void	sort(t_list **a, t_list **b, int n)
 		pre_order(a, b);
 	while (counter(*a) > 2)
 	{
+		if (is_sorted_list(*a) == 0)
+			break;
 		med = mid_list(*a);	
 		while(check_med(*a, med))
 		{	
-		if ((*a)->content < med)
-			pb(b, a);
-		else if (*b && (*b)->next && (*b)->content < (*b)->next->content)
-			do_rotate(a, b, 3);
-		else
-			do_rotate(a, b, find_direction(*a, med, 1));
+			if (is_sorted_list(*a) == 0)
+				break;
+			if ((*a)->content < med)
+				pb(b, a);
+			else if (*b && (*b)->next && (*b)->content < (*b)->next->content)
+				do_rotate(a, b, 3);
+			else
+				do_rotate(a, b, find_direction(*a, med, 1));
 		}
 	}
-	if ((*a)->content > (*a)->next->content)
+	if ((*a)->content > (*a)->next->content && !(counter(*a) > 2))
 	{
 		sa(a);
 		write(1, "sa\n", 3);
