@@ -77,10 +77,10 @@ long int *stack_to_array(t_list *a)
 long int mid_list(t_list *a)
 {
 	long int *arr;
-	long int m;
+	int m;
 
 	arr = stack_to_array(a);
-	m = mid(arr);
+	m = mid(arr, NULL);
 	free(arr);
 	return (m);
 }
@@ -92,7 +92,7 @@ int count_array(long int *array, int i)
 	return(i);
 }
 
-int mid(long int *array)
+int mid(long int *array, long int threshold)
 {
 	int j;
 	int k;
@@ -115,6 +115,17 @@ int mid(long int *array)
 			k++;
         }
         j++;
+    }
+    j = 0;
+    if(threshold != NULL)
+    {
+        while (j < dim)
+        {
+            if (array[j] > threshold)
+                break;
+			j++;
+        }
+        dim = j;
     }
     if (dim % 2 == 0)
         m = array[dim / 2];
@@ -563,88 +574,70 @@ void check_ss(t_list **a, t_list **b)
 void pre_order(t_list **a, t_list **b)
 {
     int i;
+	int med;
 
+	med = mid_list(*a);
     i = 1;
     while (i < 6)
     {
         if ((*a)->push == i)
             pb(b, a);
+		else if(*b && (*b)->next && (*b)->content < (*b)->next->content)
+            do_rotate(a, b, 3);
         else
-            do_rotate(a, b, 1);
+            do_rotate(a, b, find_direction(*a, med, 1));
         if (!check_push(a, i))
-            i++;
+        	i++;
     }
-}
-
-long int sub_array(long int *arr)
-{
-	long int *sub;
-	int i;
-	int j;
-	int max;
-
-	max = mid(arr);
-	i = 0;
-	j = 0;
-	while(arr[i])
-	{
-		if (arr[i]< max)
-			j++;
-	}
-	sub = malloc(sizeof(long int)*(j + 1));
-	if (sub == NULL)
-        return (NULL);
-	i = 0;
-	j = 0;
-	while(arr[i])
-	{
-		if (arr[i]< max)
-		{
-			sub[j] = arr[i];
-			j++;
-		}
-		i++;
-	}
-	sub[j] = NULL;
-	return (sub);
 }
 
 void add_push(t_list *new_node, int size, long int *arr)
 {
-	long int med;
-    long int smid;
-    long int sub2_mid;
-    long int sub3_mid;
-    long int sub4_mid;
+	int med;
+    int smid;
+    int sub2_mid;
+    int sub3_mid;
+    int sub4_mid;
 
-	med = mid(arr);
-    smid = mid(sub_array(arr));
-    sub2_mid = mid(sub_array(sub_array(arr)));
-    sub3_mid = mid(sub_array(sub_array(sub_array(arr))));
-    sub4_mid = mid(sub_array(sub_array(sub_array(sub_array(arr)))));
+	med = mid(arr, NULL);
+    smid = mid(arr, med);
+    sub2_mid = mid(arr, smid);
+    sub3_mid = mid(arr, sub2_mid);
+    sub4_mid = mid(arr, sub3_mid);
 	if (new_node->content < sub4_mid)
-			new_node->push = 1;
-		else if (new_node->content< sub3_mid)
-			new_node->push = 2;
-		else if (new_node->content < sub2_mid)
-			new_node->push = 3;
-		else if (new_node->content < smid)
-			new_node->push = 4;
-		else if (new_node->content < med)
-			new_node->push = 5;		
-		else
-			new_node->push = 6;
+		new_node->push = 1;
+	else if (new_node->content< sub3_mid)
+		new_node->push = 2;
+	else if (new_node->content < sub2_mid)
+		new_node->push = 3;
+	else if (new_node->content < smid)
+		new_node->push = 4;
+	else if (new_node->content < med)
+		new_node->push = 5;		
+	else
+		new_node->push = 6;
 }
 
 void array_to_stack(long int *arr, int size, t_list **stack)
 {
 	t_list *new_node;
+	int i;
 
 	*stack = NULL;
-	int i = size - 1;
+	i = size - 1;
 	while (i >= 0)
 	{
-		new_node = malloc(sizeof(t_list));
+        new_node = malloc(sizeof(t_list));
+        if (!new_node)
+        {
+            while (*stack != NULL)
+            {
+                t_list *temp = *stack;
+                *stack = (*stack)->next;
+                free(temp);
+            }
+            return;
+        }
 		new_node->content = arr[i];
 		if (size > 50)
 			add_push(new_node, size, arr);
@@ -676,6 +669,7 @@ int ft_check(long int *nums, int i)
 	}
 	return (1);
 }
+
 int is_sign(char av)
 {
 	if (av == '+')
@@ -686,14 +680,12 @@ int is_sign(char av)
 		return (0);
 }
 
-int ft_atoi(char **argv, long int *nums)
+int ft_atoi(char **nptr, long int *nums)
 {
-	char **nptr;
     int i = 1;
     long int num = 0;
     int n = 0;
 
-	nptr = argv;
     while (nptr[i])
     {
         int sign = 1;
@@ -759,12 +751,16 @@ int main(int argc, char **argv)
     int n;
 
 	stackA = malloc(sizeof(t_list));
+	if (!stackA)
+		return (0);
 	stackB = malloc(sizeof(t_list));
+	if (!stackB)
+		return (0);
     n = count_element(argv);
     long int nums[n];
     ft_atoi(argv, nums);
-    if (argc <= 2 || ft_check(nums, n) == 0)
-        return (0);
+    if (argc < 2 || ft_check(nums, n) == 0)
+        return (write(1, "Errore\n", 7));
     array_to_stack(nums, n, &stackA);
     sort(&stackA, &stackB, n); 
 	ft_lstclear(stackA);
