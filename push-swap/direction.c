@@ -15,7 +15,7 @@ int is_sorted_list(t_list *list)
 	return (i);
 }
 
-int find_direction(t_list *a, int med, int A)
+int find_direction_med(t_list *a, int med, int A)
 {
 	int pi;
 	int pj;
