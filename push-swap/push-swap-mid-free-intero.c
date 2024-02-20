@@ -585,7 +585,7 @@ void pre_order(t_list **a, t_list **b)
 		else if(*b && (*b)->next && (*b)->content < (*b)->next->content)
             do_rotate(a, b, 3);
         else
-            do_rotate(a, b, find_direction(*a, med, 1));
+            do_rotate(a, b, find_direction(*a, med, 1));//Qui non dovrebbe guardare med ma il push
         if (!check_push(a, i))
         	i++;
     }
