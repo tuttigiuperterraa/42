@@ -21,7 +21,7 @@ long int *stack_to_array(t_list *a)
 
 	size = counter(a);
 	n = size;
-	arr = malloc(sizeof(long int)* (size + 1));
+	arr = (long int *)malloc(sizeof(long int)* (size + 1));
 	if (!arr)
 		return (NULL);
 	tmp = a;
