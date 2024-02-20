@@ -15,7 +15,8 @@ typedef struct s_list
 //Direction.c
 int penality_rr(t_list *a, int t);
 int penality_r(t_list *a, int t);
-int find_direction(t_list *a, int med, int A);
+int find_direction_med(t_list *a, int med, int A);
+int find_direction_push(t_list *a, int push, int A);
 int is_sorted_list(t_list *list);
 //Main.c
 int count_element(char **argv);
