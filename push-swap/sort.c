@@ -52,8 +52,10 @@ void pre_order(t_list **a, t_list **b)
     {
         if ((*a)->push == i)
             pb(b, a);
+        else if(*b && (*b)->next && (*b)->content < (*b)->next->content)
+            do_rotate(a, b, 3);
         else
-            do_rotate(a, b, 1);
+            do_rotate(a, b, find_direction_push(*a, i, 1));//Qui non dovrebbe guardare med ma il push
         if (!check_push(a, i))
             i++;
     }
@@ -81,7 +83,7 @@ void	sort(t_list **a, t_list **b, int n)
 			else if (*b && (*b)->next && (*b)->content < (*b)->next->content)
 				do_rotate(a, b, 3);
 			else
-				do_rotate(a, b, find_direction(*a, med, 1));
+				do_rotate(a, b, find_direction_med(*a, med, 1));
 		}
 	}
 	if ((*a)->content > (*a)->next->content && !(counter(*a) > 2))
