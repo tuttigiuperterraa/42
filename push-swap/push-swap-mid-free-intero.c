@@ -60,7 +60,7 @@ long int *stack_to_array(t_list *a)
 
 	size = counter(a);
 	n = size;
-	arr = malloc(sizeof(long int)* (size + 1));
+	arr = (long int *)malloc(sizeof(long int)* (size + 1));
 	if (!arr)
 		return (NULL);
 	tmp = a;
@@ -92,25 +92,42 @@ int count_array(long int *array, int i)
 	return(i);
 }
 
+long int *dup_array(long int *array, int dim)
+{
+	int i;
+	long int *a;
+
+	i = 0;
+	a = (long int *)malloc(sizeof(long int)* dim);
+	while (i < dim)
+	{
+		a[i]=array[i];
+		i++;
+	}
+	return (a);
+}
+
+
 int mid(long int *array, long int threshold)
 {
 	int j;
 	int k;
 	int m;
 	int dim;
+	long int *a;
 
 	dim = count_array(array, 0);
-	j = 0;
+	a = dup_array(array, dim);
     while (j < dim - 1)
     {
         k = j + 1;
         while (k < dim)
         {
-            if (array[j] > array[k])
+            if (a[j] > a[k])
             {
-                int temp = array[j];
-                array[j] = array[k];
-                array[k] = temp;
+                int temp = a[j];
+                a[j] = a[k];
+                a[k] = temp;
             }
 			k++;
         }
@@ -128,9 +145,10 @@ int mid(long int *array, long int threshold)
         dim = j;
     }
     if (dim % 2 == 0)
-        m = array[dim / 2];
+        m = a[dim / 2];
     else
-        m = array[(dim - 1) / 2];
+        m = a[(dim - 1) / 2];
+	free(a);
     return m;
 }
 
@@ -315,6 +333,69 @@ int find_direction_med(t_list *a, int med, int A)
 			return (1);
 	}
 	return (2);
+}
+
+int find_direction_push(t_list *a, int push, int A)
+{
+	int pi;
+	int pj;
+
+	pi = penality_r_push(a, push);
+	pj = penality_rr_push(a, push);
+    if (pj < pi)
+	{
+		if (A)
+			return (4);
+		return (5);
+	}  
+    else 
+	{
+		if (A)
+			return (1);
+	}
+	return (2);
+}
+
+int penality_r_push(t_list *a, int t)
+{
+    int pi;
+    int i;
+    t_list *head;
+    
+    head = a;
+    i = 0;
+    pi = 0;
+    while (i++ < counter(a)/2)
+    {
+        if (head->push != t)
+        {
+            pi++;
+            head = head->next;
+        } 
+    }
+	return (pi); 
+}
+
+int penality_rr_push(t_list *a, int t)
+{
+    int pj;
+    int j;
+    t_list *mid;
+    
+    mid = a;
+    j = 0;
+    pj = 0;
+    while (j++ < counter(a)/2 -1)
+        mid = mid->next;
+    while (mid)
+    {
+        if (mid->push != t)
+        {
+            pj++;
+            mid = mid->next;
+        }
+        return (counter(a)/2 -pj);
+    }
 }
 
 int penality_r(t_list *a, int t)
@@ -574,9 +655,7 @@ void check_ss(t_list **a, t_list **b)
 void pre_order(t_list **a, t_list **b)
 {
     int i;
-	int med;
 
-	med = mid_list(*a);
     i = 1;
     while (i < 6)
     {
@@ -627,6 +706,13 @@ void array_to_stack(long int *arr, int size, t_list **stack)
 	i = size - 1;
 	while (i >= 0)
 	{
+		//printf("ARR1: %i i: %i \n", arr[i], i);
+		i--;
+	}
+	i = size - 1;
+	while (i >= 0)
+	{
+		//printf("ARR2: %i i: %i \n", arr[i], i); //MA come è possibile??????
         new_node = malloc(sizeof(t_list));
         if (!new_node)
         {
@@ -763,8 +849,8 @@ int main(int argc, char **argv)
         return (write(1, "Errore\n", 7));
     array_to_stack(nums, n, &stackA);
     sort(&stackA, &stackB, n); 
-	ft_lstclear(stackA);
+	/*ft_lstclear(stackA);
     ft_lstclear(stackB);
-	free(nums);
+	free(nums);*/
     return (0);
 }
