@@ -12,7 +12,7 @@
 
 #include "push_swap.h"
 
-int night_function(t_stack **a, t_stack **b)
+/*int night_function(t_stack **a, t_stack **b)
 {
 	int next;
 	t_stack *temp;
@@ -31,7 +31,7 @@ int night_function(t_stack **a, t_stack **b)
 		temp = temp->next;
 	}
 	return (next);
-}
+}*/
 
 void little_check_while(t_stack **a, t_stack **b, int i)
 {
@@ -46,7 +46,7 @@ void little_check_while(t_stack **a, t_stack **b, int i)
 		reverse_rotate(a);  
 		write(1, "rra\n", 4);
     }
-}
+}*/
 
 void little_check(t_stack **a, t_stack **b)
 {
@@ -78,7 +78,7 @@ void little_check(t_stack **a, t_stack **b)
 
 void cont(t_stack **a, t_stack **b)
 {
-	check_ss(a, b);
+	//check_ss(a, b);
 	little_check(a, b);
 	pa(a, b);
 	free_stack(*b);
