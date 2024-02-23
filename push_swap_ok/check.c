@@ -121,14 +121,14 @@ int ft_check(long int *nums, int i)
 	return (1);
 }
 
-void print_stack(t_stack *stack)
+/*void print_stack(t_stack *stack)
 {
     while (stack != NULL) {
         printf("Value: %ld\n", stack->val);
         stack = stack->next;
     }
     printf("\n");
-}
+}*/
 
 float media_array(long array[], int lunghezza)
 {
