@@ -72,7 +72,7 @@ void pre_order(t_stack **a, t_stack **b)
         else if(*b && (*b)->next && (*b)->val < (*b)->next->val )
             do_rotate(a, b, 3);
         else
-            do_rotate(a, b, 1);
+            do_rotate(a, b, find_direction_push(*a, i, 1));
         if (!check_push(a, i))
             i++;
     }
