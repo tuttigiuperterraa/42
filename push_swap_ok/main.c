@@ -28,12 +28,10 @@ int is_sorted(long int *arr, int n)
 
 int main(int argc, char **argv)
 {
-	t_stack *stack = NULL;
-	t_stack *b = NULL;
+	t_stack *stack_a = NULL;
+	t_stack *stack_b = NULL;
 
-	// b = malloc(sizeof(t_stack));
-	// if (!b)
-	// 	return (0);	
+	
 	int n = count_num(argv);
 	long int nums[n];
 	ft_atoi(argv, nums);
@@ -41,7 +39,7 @@ int main(int argc, char **argv)
 		return(write(1, "Error", 5));
 	if (n == 1 || is_sorted(nums, n))
 		return (0);
-	array_to_stack(nums, n, &stack);
-	sort(&stack, &b, n);
+	array_to_stack(nums, n, &stack_a);
+	sort(&stack_a, &stack_b, n);
 	return (0);
 }
