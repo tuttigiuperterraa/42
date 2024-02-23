@@ -72,24 +72,3 @@ void pb(t_stack **add, t_stack **take)
 	remove_first(take);
 	write(1, "pb\n", 3);
 }
-
-/*int main()
-{
-    // Example usage
-    t_stack *stackA = (t_stack *)malloc(sizeof(t_stack));
-    t_stack *nodeB = (t_stack *)malloc(sizeof(t_stack));
-    stackA->index = 31;
-    nodeB->index = 42;
-    push(&stackA, nodeB);
-    printf("%d\n",stackA->index);
-        printf("%d",stackA->next->index);
-    // Cleanup: Free allocated memory
-    while (stackA)
-    {
-        t_stack *temp = stackA;
-        stackA = stackA->next;
-        free(temp);
-    }
-    free(nodeB);
-    return 0;
-}*/
