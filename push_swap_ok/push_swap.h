@@ -43,6 +43,9 @@ float	media_array(long array[], int lunghezza);
 void	pa(t_stack **add, t_stack **take);
 void	pb(t_stack **add, t_stack **take);
 void	remove_first(t_stack **stack);
+int penality_rr_push(t_stack *a, int t);
+int penality_r_push(t_stack *a, int t);
+int find_direction_push(t_stack *a, int push, int A);
 //rotate
 t_stack	*ft_lstlast(t_stack *lst);
 void    ft_lstadd_back(t_stack **lst, t_stack *new);
