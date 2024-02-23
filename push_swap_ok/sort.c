@@ -98,7 +98,7 @@ void	sort(t_stack **a, t_stack **b, int n)
 		else
 			do_rotate(a, b, find_direction_med(*a, mediat, 1));
 	}
-	if ((*a)->val > (*a)->next->val && !(counter(*a) > 2))
+	if ((*a)->val > (*a)->next->val && (counter(*a) == 2))
 	{
 		sa(a);
 		write(1, "sa\n", 3);
