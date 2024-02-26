@@ -1,0 +1,3 @@
+1) Controllare i leak
+2) Splittare le funzioni > 25 righe
+3) Ottimizzare per ridurre le mosse
