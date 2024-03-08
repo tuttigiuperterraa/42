@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gcosenza <marvin@student.42.fr>            +#+  +:+       +#+        */
+/*   By: gcosenza <gcosenza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 15:41:49 by gcosenza          #+#    #+#             */
-/*   Updated: 2024/03/04 15:41:49 by gcosenza         ###   ########.fr       */
+/*   Updated: 2024/03/08 08:20:16 by gcosenza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #include    <string.h>
 #include    <unistd.h>
 #include    <sys/types.h>
+#include    <sys/wait.h>
 #include    "libft.h"
 
 typedef struct s_func
@@ -22,7 +23,7 @@ typedef struct s_func
     char    *name;
     char    *path;
     char    **parameters;
-} t_func
+} t_func;
 
 void	free_matrix(char **matrix)
 {
@@ -41,7 +42,8 @@ char	*find_path(char **envp)
 	while (envp && *envp)
 		if (ft_strncmp(*envp++, "PATH=", 5) == 0)
 			return (*(envp - 1) + 5);
-	exit(1, "PATH not found", 15);
+	write(2, "PATH not found", 15);
+	exit (1);
 	return (NULL);
 }
 
@@ -61,9 +63,9 @@ char	*get_path(char *path, char *name)
 		full_path = malloc(size * sizeof(char));
 		if (!full_path)
 			break ;
-		ft_strncpy(full_path, dirs[i], size);
-		ft_strcat(full_path, "/");
-		ft_strcat(full_path, name);
+		ft_strlcpy(full_path, dirs[i], size);
+		ft_strlcat(full_path, "/", size);
+		ft_strlcat(full_path, name, size);
 		if (access(full_path, X_OK) == 0)
 			break ;
 		free(full_path);
@@ -73,7 +75,7 @@ char	*get_path(char *path, char *name)
 	return (full_path);
 }
 
-void    init_func(t_func *funcs, char **argv, int argc, char **envp)
+int    init_func(t_func *funcs, char **argv, int argc, char **envp)
 {
     int n;
     int i;
@@ -82,66 +84,71 @@ void    init_func(t_func *funcs, char **argv, int argc, char **envp)
     n = argc - 3;
     funcs = malloc(sizeof(t_func) * n + 1);
     if (!funcs)
-        return (write(1, "Malloc error.\n", 14));
-    for (i < n)
+        return (write(1, "Malloc error.\n", 15));
+    while (i < n)
     {
-        funcs[i].parameters = ft_split(argv[i + 2]);
+        funcs[i].parameters = ft_split(argv[i + 2], ' ');
         funcs[i].name = funcs[i].parameters[1];
         funcs[i].path = get_path(find_path(envp), funcs[i].name);
         i++;
     }
+	return (0);
 }
 
 void    menage_inout(int *fd_files, char **argv, int argc)
 {
-    fd_files = malloc(sizeof(int) * 2);
-    if (!fd_files)
-        return (write(1, "Malloc error.\n", 14));
     fd_files[0] = open(argv[1], O_RDONLY);
 	fd_files[1] = open(argv[argc - 1], O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (fd_files[0] == -1 || fd_files[1] == -1)
-		exit;
+		exit (1);
 }
 
 int main(int argc, char **argv, char **envp)
 {
     int     fd[2];
-    int     fd_files;
+    int     fd_files[2];
     int     pid1;
+	int     pid2;
     int     n;
     t_func    *funcs;
 
     if (argc < 5)
         return (write(1, "Wrong number of arguments.\n", 27));
     menage_inout(fd_files, argv, argc);
-    init_funcs(funcs, argv, argc, envp);
+    init_func(funcs, argv, argc, envp);
     if (pipe(fd) == -1)
         return (write(1, "Could not initialize the pipe.\n", 31));
     pid1 = fork();
     if (pid1 < 0)
         return (write(1, "Could not fork the process.\n", 28));
     else if (pid1 == 0)
-   /* {
+	{
         //child process
-        dup2(fd_file[0], STDIN_FILENO);
+        dup2(fd_files[0], STDIN_FILENO);
         dup2(fd[1], STDOUT_FILENO);
         close(fd[0]);
-        close(fd[1]);
-        execve(funcs[i].path, funcs[i].param, NULL);
-
-
+        execve(funcs[0].path, funcs[0].param, NULL);
     }
-    else
+    pid2 = fork();
+    if (pid2 < 0)
+        return (write(1, "Could not fork the process.\n", 28));	
+    else if (pid2 == 0 && pid1 > 0)
     {
-        //parent process
+        //child2 process
+        dup2(fd_files[1], STDOUT_FILENO);
         dup2(fd[0], STDIN_FILENO);
-        close(fd[0]);
         close(fd[1]);
-        execve(func2[0], func2, NULL);
-    }*/
-    close(fd[0]);
-    close(fd[1]);    
-    waitpid(pid1, NULL, 0);
-    waitpid(pid2, NULL, 0);
+        execve(funcs[1].path, funcs[1].param, NULL);
+    }
+	if (pid1 > 0 && pid2 > 0)
+	{
+		//parent process
+    	close(fd[0]);
+    	close(fd[1]);
+		close(fd_files[0]);
+		close(fd_files[1]);  
+    	waitpid(pid1, NULL, 0);
+    	waitpid(pid2, NULL, 0);
+	}
     return (0);
 }
