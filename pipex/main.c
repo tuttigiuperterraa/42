@@ -17,85 +17,128 @@
 #include    <sys/types.h>
 #include    "libft.h"
 
-int count_params(char *array)
+typedef struct s_func
 {
-    int i;
-    int w;
+    char    *name;
+    char    *path;
+    char    **parameters;
+} t_func
 
-    i = 0;
-    w = 0;
-    while (array[i] == '"')
-        i++;
-    while (array[i] != '"')
-    {    
-        if (array[i] == ' ' && array[i  +1] != ' ')
-            w++;
-        i++;
-    }
-    return (w + 1);
+void	free_matrix(char **matrix)
+{
+	char	**start;
+
+	if (!matrix || !*matrix)
+		return ;
+	start = matrix;
+	while (*matrix)
+		free(*matrix++);
+	free(start);
 }
 
-char    **fill_func(char **func, char *argv)
+char	*find_path(char **envp)
 {
-    int p;
+	while (envp && *envp)
+		if (ft_strncmp(*envp++, "PATH=", 5) == 0)
+			return (*(envp - 1) + 5);
+	exit(1, "PATH not found", 15);
+	return (NULL);
+}
+
+char	*get_path(char *path, char *name)
+{
+	char			**dirs;
+	char			*full_path;
+	unsigned int	i;
+	unsigned int	size;
+
+	dirs = ft_split(path, ':');
+	full_path = NULL;
+	i = -1;
+	while (dirs[++i])
+	{
+		size = ft_strlen(dirs[i]) + ft_strlen(name) + 2;
+		full_path = malloc(size * sizeof(char));
+		if (!full_path)
+			break ;
+		ft_strncpy(full_path, dirs[i], size);
+		ft_strcat(full_path, "/");
+		ft_strcat(full_path, name);
+		if (access(full_path, X_OK) == 0)
+			break ;
+		free(full_path);
+		full_path = NULL;
+	}
+	free_matrix(dirs);
+	return (full_path);
+}
+
+void    init_func(t_func *funcs, char **argv, int argc, char **envp)
+{
+    int n;
     int i;
-    int j;
-    char **argv_sp;
 
     i = 0;
-    j = 0;
-    p = count_params(argv); 
-    func = malloc(sizeof(char *) * p + 1);
-    if (!func)
+    n = argc - 3;
+    funcs = malloc(sizeof(t_func) * n + 1);
+    if (!funcs)
         return (write(1, "Malloc error.\n", 14));
-    func[p] = '\0';
-    argv_sp = ft_split(argv, " ");
-    while (func[i] != '\0')
+    for (i < n)
     {
-        func[i] = malloc(sizeof(char) * ft_strlen(argv_split[i]) + 1);
-        if (!func[i])
-            return (write(1, "Malloc error.\n", 14));
-        while (func[i][j] != '\0' || argv_sp[i][j] != '\0')
-        {
-            func[i][j] = argv_sp[i][j];
-            j++;
-        }
+        funcs[i].parameters = ft_split(argv[i + 2]);
+        funcs[i].name = funcs[i].parameters[1];
+        funcs[i].path = get_path(find_path(envp), funcs[i].name);
         i++;
     }
 }
 
-int main(int argc, char **argv)
+void    menage_inout(int *fd_files, char **argv, int argc)
+{
+    fd_files = malloc(sizeof(int) * 2);
+    if (!fd_files)
+        return (write(1, "Malloc error.\n", 14));
+    fd_files[0] = open(argv[1], O_RDONLY);
+	fd_files[1] = open(argv[argc - 1], O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	if (fd_files[0] == -1 || fd_files[1] == -1)
+		exit;
+}
+
+int main(int argc, char **argv, char **envp)
 {
     int     fd[2];
+    int     fd_files;
     int     pid1;
-    int     pid2;
-    char    **func1;
-    char    **func2;
+    int     n;
+    t_func    *funcs;
 
     if (argc < 5)
         return (write(1, "Wrong number of arguments.\n", 27));
+    menage_inout(fd_files, argv, argc);
+    init_funcs(funcs, argv, argc, envp);
     if (pipe(fd) == -1)
         return (write(1, "Could not initialize the pipe.\n", 31));
     pid1 = fork();
-    pid2 = fork();
-    fill_func(func1, argv[2]);
-    fill_func(func2, argv[4]);
-    if (pid1 < 0 || pid2 < 0)
+    if (pid1 < 0)
         return (write(1, "Could not fork the process.\n", 28));
-    if (pid1 == 0)
-    {
+    else if (pid1 == 0)
+   /* {
+        //child process
+        dup2(fd_file[0], STDIN_FILENO);
         dup2(fd[1], STDOUT_FILENO);
         close(fd[0]);
         close(fd[1]);
-        execve(func1[0], func1, NULL);
+        execve(funcs[i].path, funcs[i].param, NULL);
+
+
     }
-    if (pid2 == 0)
+    else
     {
+        //parent process
         dup2(fd[0], STDIN_FILENO);
         close(fd[0]);
         close(fd[1]);
         execve(func2[0], func2, NULL);
-    }
+    }*/
     close(fd[0]);
     close(fd[1]);    
     waitpid(pid1, NULL, 0);
