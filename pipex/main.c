@@ -6,7 +6,7 @@
 /*   By: gcosenza <gcosenza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 15:41:49 by gcosenza          #+#    #+#             */
-/*   Updated: 2024/03/08 08:20:16 by gcosenza         ###   ########.fr       */
+/*   Updated: 2024/03/19 08:58:45 by gcosenza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,9 @@
 #include    <string.h>
 #include    <unistd.h>
 #include    <sys/types.h>
+#include	<fcntl.h>
 #include    <sys/wait.h>
-#include    "libft.h"
+#include    "libft/libft.h"
 
 typedef struct s_func
 {
@@ -75,21 +76,25 @@ char	*get_path(char *path, char *name)
 	return (full_path);
 }
 
-int    init_func(t_func *funcs, char **argv, int argc, char **envp)
+int    init_func(t_func **funcs, char **argv, int argc, char **envp)
 {
     int n;
     int i;
 
     i = 0;
     n = argc - 3;
-    funcs = malloc(sizeof(t_func) * n + 1);
-    if (!funcs)
+	argv++;
+    *funcs = malloc(sizeof(t_func) * n + 1);
+    if (!(*funcs))
         return (write(1, "Malloc error.\n", 15));
     while (i < n)
     {
-        funcs[i].parameters = ft_split(argv[i + 2], ' ');
-        funcs[i].name = funcs[i].parameters[1];
-        funcs[i].path = get_path(find_path(envp), funcs[i].name);
+        (*funcs)[i].parameters = ft_split(argv[i + 2], ' ');
+        (*funcs)[i].name = (*funcs)[i].parameters[0];
+        (*funcs)[i].path = get_path(find_path(envp), (*funcs)[i].name);//NON VA BENE
+																	//IL PRIMO VALORE
+																	//DI PARAMETERS
+																	//DEVE ESSERE IL PATH
         i++;
     }
 	return (0);
@@ -115,7 +120,7 @@ int main(int argc, char **argv, char **envp)
     if (argc < 5)
         return (write(1, "Wrong number of arguments.\n", 27));
     menage_inout(fd_files, argv, argc);
-    init_func(funcs, argv, argc, envp);
+    init_func(&funcs, argv, argc, envp);
     if (pipe(fd) == -1)
         return (write(1, "Could not initialize the pipe.\n", 31));
     pid1 = fork();
@@ -127,7 +132,7 @@ int main(int argc, char **argv, char **envp)
         dup2(fd_files[0], STDIN_FILENO);
         dup2(fd[1], STDOUT_FILENO);
         close(fd[0]);
-        execve(funcs[0].path, funcs[0].param, NULL);
+        execve(funcs[0].path, funcs[0].parameters, NULL);
     }
     pid2 = fork();
     if (pid2 < 0)
@@ -138,7 +143,7 @@ int main(int argc, char **argv, char **envp)
         dup2(fd_files[1], STDOUT_FILENO);
         dup2(fd[0], STDIN_FILENO);
         close(fd[1]);
-        execve(funcs[1].path, funcs[1].param, NULL);
+        execve(funcs[1].path, funcs[1].parameters, NULL);
     }
 	if (pid1 > 0 && pid2 > 0)
 	{
