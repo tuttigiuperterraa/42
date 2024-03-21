@@ -5,7 +5,7 @@
 #include    <unistd.h>
 #include    <sys/types.h>
 #include	<fcntl.h>
-//#include    <sys/wait.h>
+#include    <sys/wait.h>
 #include    "libft/libft.h"
 
 typedef struct s_func
