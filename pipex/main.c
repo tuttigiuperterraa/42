@@ -83,7 +83,6 @@ int    init_func(t_func **funcs, char **argv, int argc, char **envp)
 
     i = 0;
     n = argc - 3;
-	argv++;
     *funcs = malloc(sizeof(t_func) * n + 1);
     if (!(*funcs))
         return (write(1, "Malloc error.\n", 15));
@@ -91,11 +90,10 @@ int    init_func(t_func **funcs, char **argv, int argc, char **envp)
     {
         (*funcs)[i].parameters = ft_split(argv[i + 2], ' ');
         (*funcs)[i].name = (*funcs)[i].parameters[0];
-        (*funcs)[i].path = get_path(find_path(envp), (*funcs)[i].name);//NON VA BENE
-																	//IL PRIMO VALORE
-																	//DI PARAMETERS
-																	//DEVE ESSERE IL PATH
-        i++;
+        (*funcs)[i].path = get_path(find_path(envp), (*funcs)[i].name);
+	if ((*funcs)[i].parameters[0] != NULL)
+		free((*funcs)[i].parameters[0]);
+	(*funcs)[i].parameters[0] = (*funcs)[i].path;
     }
 	return (0);
 }
