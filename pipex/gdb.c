@@ -145,7 +145,6 @@ int main(int argc, char **argv, char **envp)
         close(fd[0]);
         execve(funcs[i].path, funcs[i].parameters, NULL);
     }
-    waitpid(pid[i], NULL, 0);
     while (++i < argc - 4)
     {
         pid[i] = fork();
@@ -159,7 +158,6 @@ int main(int argc, char **argv, char **envp)
             close(fd[0]);
             execve(funcs[i].path, funcs[i].parameters, NULL);
         }
-        waitpid(pid[i], NULL, 0);
     }
     pid[i] = fork();
     if (pid[i] < 0)
@@ -180,11 +178,11 @@ int main(int argc, char **argv, char **envp)
 		close(fd_files[0]);
 		close(fd_files[1]);
         i = 0;
-        /*while (i < argc - 3)
+        while (i < argc - 3)
         {
     	    waitpid(pid[i], NULL, 0);
             i++;
-        }*/
+        }
         //while(wait(NULL) > 0);
 	}
     return (0);
