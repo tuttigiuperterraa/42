@@ -62,6 +62,11 @@ char	*get_path(char *path, char *name)
 		full_path = NULL;
 	}
 	free_matrix(dirs);
+    if (full_path == NULL)
+    {
+        write (1, "Function not found\n", 19);
+        exit (1);
+    }
 	return (full_path);
 }
 
@@ -80,9 +85,10 @@ int    init_func(t_func **funcs, char **argv, int argc, char **envp)
         (*funcs)[i].parameters = ft_split(argv[i + 2], ' ');
         (*funcs)[i].name = (*funcs)[i].parameters[0];
         (*funcs)[i].path = get_path(find_path(envp), (*funcs)[i].name);
-	if ((*funcs)[i].parameters[0] != NULL)
-		free((*funcs)[i].parameters[0]);
-	(*funcs)[i].parameters[0] = (*funcs)[i].path;
+	    if ((*funcs)[i].parameters[0] != NULL)
+		    free((*funcs)[i].parameters[0]);
+	    (*funcs)[i].parameters[0] = (*funcs)[i].path;
+        i++;
     }
 	return (0);
 }
@@ -106,6 +112,23 @@ int sum(int *a, int size)
         a++;
         size--;
     }
+    return (sum);
+}
+
+void	wait_child(void)
+{
+	int		status;
+
+	if (wait(&status) == -1)
+		exit(6);
+	if (WIFSIGNALED(status))
+		exit(6);
+	else
+	{
+		status = WEXITSTATUS(status);
+		if (status >= 42 && status <= 44)
+			exit(status);
+	}
 }
 
 int main(int argc, char **argv, char **envp)
@@ -117,6 +140,9 @@ int main(int argc, char **argv, char **envp)
     int     i;
     t_func    *funcs;
 
+    /*argc--;
+    argv++;
+    int     pid[argc - 3];*/
     if (argc < 5)
         return (write(1, "Wrong number of arguments.\n", 27));
     menage_inout(fd_files, argv, argc);
@@ -167,13 +193,10 @@ int main(int argc, char **argv, char **envp)
     	close(fd[1]);
 		close(fd_files[0]);
 		close(fd_files[1]);
-        /*while (argc - 3 > 0)
-        {
-    	    waitpid(*pid, NULL, 0);
-            pid++;
-            argc--;
-        }*/
-        while(wait(NULL) > 0);
+        i = 0;
+        while (i++ < argc - 3)
+    	    wait_child();
+        //while(wait(NULL) > 0);
 	}
     return (0);
 }
