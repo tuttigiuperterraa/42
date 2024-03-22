@@ -131,7 +131,7 @@ void	wait_child(void)
 			exit(status);
 	}
 }
-void    opening_pid(int i, int **pid, int *fd, int *fd_files, t_func *funcs)
+void    opening_pid(int i, int *pid, int *fd, int *fd_files, t_func *funcs)
 {
     pid[i] = fork();
     if (pid[i] < 0)
@@ -144,7 +144,7 @@ void    opening_pid(int i, int **pid, int *fd, int *fd_files, t_func *funcs)
         execve(funcs[i].path, funcs[i].parameters, NULL);
     }
 }
-void    middle_pid(int i, int **pid, int *fd, int *fd_files, t_func *funcs)
+void    middle_pid(int i, int *pid, int *fd, int *fd_files, t_func *funcs)
 {
     pid[i] = fork();
     if (pid[i] < 0)
@@ -157,7 +157,7 @@ void    middle_pid(int i, int **pid, int *fd, int *fd_files, t_func *funcs)
         execve(funcs[i].path, funcs[i].parameters, NULL);
     }
 }
-void    closing_pid(int i, int **pid, int *fd, int *fd_files, t_func *funcs)
+void    closing_pid(int i, int *pid, int *fd, int *fd_files, t_func *funcs)
 {
     pid[i] = fork();
     if (pid[i] < 0)
@@ -202,10 +202,10 @@ int main(int argc, char **argv, char **envp)
     if (pipe(fd) == -1)
         return (write(1, "Could not initialize the pipe.\n", 31));
     i = 0;
-    opening_pid(i, &pid, fd, fd_files, funcs);
+    opening_pid(i, pid, fd, fd_files, funcs);
     while (++i < argc - 4)
-        middle_pid(i, &pid, fd, fd_files, funcs);
-    closing_pid(i, &pid, fd, fd_files, funcs);
+        middle_pid(i, pid, fd, fd_files, funcs);
+    closing_pid(i, pid, fd, fd_files, funcs);
 	if (sum(pid, argc - 3) > 0)
         menage_parent(argc);
     return (0);
