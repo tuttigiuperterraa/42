@@ -112,6 +112,7 @@ int sum(int *a, int size)
         a++;
         size--;
     }
+	return (sum);
 }
 
 int main(int argc, char **argv, char **envp)
