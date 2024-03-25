@@ -15,6 +15,11 @@ typedef struct s_func
     char    **parameters;
 } t_func;
 
+void    verbose_exit(char *str)
+{
+    write (1, str, ft_strlen(str));
+    exit (1); 
+}
 void	free_matrix(char **matrix)
 {
 	char	**start;
@@ -32,9 +37,8 @@ char	*find_path(char **envp)
 	while (envp && *envp)
 		if (ft_strncmp(*envp++, "PATH=", 5) == 0)
 			return (*(envp - 1) + 5);
-	write(2, "PATH not found", 15);
-	exit (1);
-	return (NULL);
+	verbose_exit("PATH not found");
+	//return (NULL);
 }
 
 char	*get_path(char *path, char *name)
@@ -45,10 +49,10 @@ char	*get_path(char *path, char *name)
 	unsigned int	size;
 
 	dirs = ft_split(path, ':');
-	full_path = NULL;
 	i = -1;
 	while (dirs[++i])
 	{
+        full_path = NULL;
 		size = ft_strlen(dirs[i]) + ft_strlen(name) + 2;
 		full_path = malloc(size * sizeof(char));
 		if (!full_path)
@@ -59,14 +63,10 @@ char	*get_path(char *path, char *name)
 		if (access(full_path, X_OK) == 0)
 			break ;
 		free(full_path);
-		full_path = NULL;
 	}
 	free_matrix(dirs);
     if (full_path == NULL)
-    {
-        write (1, "Function not found\n", 19);
-        exit (1);
-    }
+        verbose_exit("Function not found\n");
 	return (full_path);
 }
 
@@ -130,7 +130,61 @@ void	wait_child(void)
 			exit(status);
 	}
 }
+void    opening_pid(int i, int *pid, int *fd, int *fd_files, t_func *funcs)
+{
+    pid[i] = fork();
+    if (pid[i] < 0)
+        verbose_exit("Could not fork the process.\n");
+    else if (pid[i] == 0)
+	{
+        dup2(fd_files[0], STDIN_FILENO);
+        dup2(fd[1], STDOUT_FILENO);
+        close(fd[0]);
+        execve(funcs[i].path, funcs[i].parameters, NULL);
+        verbose_exit("Could not execute child process.\n");
+    }
+}
+void    middle_pid(int i, int *pid, int *fd, t_func *funcs)
+{
+    pid[i] = fork();
+    if (pid[i] < 0)
+        verbose_exit("Could not fork the process.\n");
+    else if (pid[i] == 0)
+	{
+        dup2(fd[0], STDIN_FILENO);
+        dup2(fd[1], STDOUT_FILENO);
+        close(fd[0]);
+        execve(funcs[i].path, funcs[i].parameters, NULL);
+        verbose_exit("Could not execute child process.\n");
+    }
+}
+void    closing_pid(int i, int *pid, int *fd, int *fd_files, t_func *funcs)
+{
+    pid[i] = fork();
+    if (pid[i] < 0)
+        verbose_exit("Could not fork the process.\n");	
+    else if (pid[i] == 0)
+    {
+        dup2(fd[0], STDIN_FILENO);
+        dup2(fd_files[1], STDOUT_FILENO);
+        close(fd[1]);
+        execve(funcs[i].path, funcs[i].parameters, NULL);
+        verbose_exit("Could not execute child process.\n");
+    }
+}
+void    menage_parent(int argc, int *fd, int *fd_files)
+{
+    int i;
 
+    i = 0;
+    close(fd[0]);
+    close(fd[1]);
+	close(fd_files[0]);
+	close(fd_files[1]);
+    while (i++ < argc - 4)
+    	wait_child();
+}
+  
 int main(int argc, char **argv, char **envp)
 {
     int     fd[2];
@@ -140,9 +194,6 @@ int main(int argc, char **argv, char **envp)
     int     i;
     t_func    *funcs;
 
-    /*argc--;
-    argv++;
-    int     pid[argc - 3];*/
     if (argc < 5)
         return (write(1, "Wrong number of arguments.\n", 27));
     menage_inout(fd_files, argv, argc);
@@ -150,53 +201,11 @@ int main(int argc, char **argv, char **envp)
     if (pipe(fd) == -1)
         return (write(1, "Could not initialize the pipe.\n", 31));
     i = 0;
-    pid[i] = fork();
-    if (pid[i] < 0)
-        return (write(1, "Could not fork the process.\n", 28));
-    else if (pid[i] == 0)
-	{
-        //child process
-        dup2(fd_files[0], STDIN_FILENO);
-        dup2(fd[1], STDOUT_FILENO);
-        close(fd[0]);
-        execve(funcs[i].path, funcs[i].parameters, NULL);
-    }
+    opening_pid(i, pid, fd, fd_files, funcs);
     while (++i < argc - 4)
-    {
-        pid[i] = fork();
-        if (pid[i] < 0)
-            return (write(1, "Could not fork the process.\n", 28));
-        else if (pid[i] == 0)
-	    {
-            //child process
-            dup2(fd[0], STDIN_FILENO);
-            dup2(fd[1], STDOUT_FILENO);
-            close(fd[0]);
-            execve(funcs[i].path, funcs[i].parameters, NULL);
-        }
-    }
-    pid[i] = fork();
-    if (pid[i] < 0)
-        return (write(1, "Could not fork the process.\n", 28));	
-    else if (pid[i] == 0)
-    {
-        //child2 process
-        dup2(fd_files[1], STDOUT_FILENO);
-        dup2(fd[0], STDIN_FILENO);
-        close(fd[1]);
-        execve(funcs[i].path, funcs[i].parameters, NULL);
-    }
+        middle_pid(i, pid, fd, funcs);
+    closing_pid(i, pid, fd, fd_files, funcs);
 	if (sum(pid, argc - 3) > 0)
-	{
-		//parent process
-    	close(fd[0]);
-    	close(fd[1]);
-		close(fd_files[0]);
-		close(fd_files[1]);
-        i = 0;
-        while (i++ < argc - 3)
-    	    wait_child();
-        //while(wait(NULL) > 0);
-	}
+        menage_parent(argc, fd, fd_files);
     return (0);
 }
